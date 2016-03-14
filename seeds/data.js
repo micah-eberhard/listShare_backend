@@ -70,6 +70,7 @@ exports.seed = function(knex, Promise) {
     return Promise.join(
       knex('items').insert({
         list_id: 1,
+        owner_id: 1,
         name: 'Steak',
         searching: null,
         acquired: null,
@@ -80,6 +81,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 1,
+        owner_id: 1,
         name: 'Bacon',
         searching: null,
         acquired: null,
@@ -90,6 +92,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 1,
+        owner_id: 1,
         name: 'Eggs',
         searching: null,
         acquired: null,
@@ -100,6 +103,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 1,
+        owner_id: 1,
         name: 'Milk',
         searching: null,
         acquired: null,
@@ -110,6 +114,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 1,
+        owner_id: 1,
         name: 'Cheese',
         searching: null,
         acquired: null,
@@ -120,6 +125,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 1,
+        owner_id: 1,
         name: 'Pops',
         searching: null,
         acquired: null,
@@ -130,6 +136,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 2,
+        owner_id: 1,
         name: 'Steak',
         searching: null,
         acquired: null,
@@ -140,6 +147,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 2,
+        owner_id: 1,
         name: 'Bacon',
         searching: null,
         acquired: null,
@@ -150,6 +158,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 2,
+        owner_id: 2,
         name: 'Sausage',
         searching: null,
         acquired: null,
@@ -160,6 +169,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 2,
+        owner_id: 2,
         name: 'Chicken',
         searching: null,
         acquired: null,
@@ -170,6 +180,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 2,
+        owner_id: 2,
         name: 'Milk',
         searching: null,
         acquired: null,
@@ -180,6 +191,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 3,
+        owner_id: 2,
         name: 'Hand Soap',
         searching: null,
         acquired: null,
@@ -190,6 +202,7 @@ exports.seed = function(knex, Promise) {
       }),
       knex('items').insert({
         list_id: 3,
+        owner_id: 2,
         name: 'Pizza',
         searching: null,
         acquired: null,
@@ -198,6 +211,14 @@ exports.seed = function(knex, Promise) {
         category: 'frozen',
         comments: null
       })
+    );
+  })
+  .then(function() {
+    return Promise.join(
+      knex('friends').insert({
+        user_id: '1',
+        friend_id: '2'
+      }).returning('id')
     );
   });
 };
