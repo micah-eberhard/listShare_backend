@@ -5,7 +5,9 @@ exports.seed = function(knex, Promise) {
     knex('users').del(),
     knex('lists').del(),
     knex('user_lists').del(),
-    knex('items').del()
+    knex('items').del(),
+    knex('friends').del(),
+    knex('blocks').del()
   )
   .then(function() {
     return Promise.join(
@@ -20,6 +22,13 @@ exports.seed = function(knex, Promise) {
         password: 'password123',
         firstName: 'Billy',
         lastName: 'Thekid'
+      }).returning('id')
+      .returning('id'),
+      knex('users').insert({
+        email: 'name@name.com',
+        password: 'password123',
+        firstName: 'Sly',
+        lastName: 'Fox'
       }).returning('id')
     );
   }).then(function() {
@@ -42,8 +51,13 @@ exports.seed = function(knex, Promise) {
         owner_id: 2,
         dateCreated: date,
         dateModified: date
+      }).returning('id'),
+      knex('lists').insert({
+        name: 'SlyStuff',
+        owner_id: 3,
+        dateCreated: date,
+        dateModified: date
       }).returning('id')
-
     );
   }).then(function() {
     return Promise.join(
@@ -62,8 +76,11 @@ exports.seed = function(knex, Promise) {
       knex('user_lists').insert({
         user_id: 2,
         list_id: 3
+      }),
+      knex('user_lists').insert({
+        user_id: 3,
+        list_id: 4
       })
-
     );
   })
   .then(function() {
@@ -210,6 +227,17 @@ exports.seed = function(knex, Promise) {
         amount: 5,
         category: 'frozen',
         comments: null
+      }),
+      knex('items').insert({
+        list_id: 4,
+        owner_id: 3,
+        name: 'Sly Fish',
+        searching: null,
+        acquired: null,
+        price: 0.0,
+        amount: 5,
+        category: 'frozen',
+        comments: null
       })
     );
   })
@@ -218,6 +246,19 @@ exports.seed = function(knex, Promise) {
       knex('friends').insert({
         user_id: '1',
         friend_id: '2'
+      }).returning('id'),
+      knex('friends').insert({
+        user_id: '3',
+        friend_id: '1'
+      }).returning('id')
+    );
+  })
+  .then(function() {
+    return Promise.join(
+      knex('blocks').insert({
+        user_id: '1',
+        block_id: '3',
+        block_email: 'name@name.com'
       }).returning('id')
     );
   });
