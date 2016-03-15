@@ -19,7 +19,8 @@ router.get('/', function(req, res, next) {
   })
   .then(function(data, err){
     if(!checkErr(res, err)){
-      res.json({success:true, data: data.data});
+      delete data.password;
+      res.json({success:true, data: data});
     }
   });
 });

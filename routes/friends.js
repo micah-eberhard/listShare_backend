@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
   })
   .then(function(data, err){
     if(!checkErr(res, err)){
-      res.json({success:true, data: data.data});
+      res.json({success:true, data: data});
     }
   });
 });
@@ -29,16 +29,23 @@ router.post('/', function(req, res, next) {
   .where({email: req.body.email})
   .then(function(data, err){
     if(!checkErr(res, err)){
-      knex('friends')
-      .insert({
-        user_id: req.user.id,
-        friend_id: data.id
-      })
-      .then(function(data2, err2){
-        if(!checkErr(res, err2)){
-          res.json({success:true});
-        }
-      });
+      if(data && data.length !== 0)
+      {
+        knex('friends')
+        .insert({
+          user_id: req.user.id,
+          friend_id: data.id
+        })
+        .then(function(data2, err2){
+          if(!checkErr(res, err2)){
+            res.json({success:true});
+          }
+        });
+      }
+      else
+      {
+        res.json({success:false, reason: "Couldn't find '"+req.body.email+"' in our records."});
+      }
     }
   });
 });

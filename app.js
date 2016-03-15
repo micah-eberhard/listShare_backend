@@ -14,6 +14,7 @@ var lists = require('./routes/lists');
 var friends = require('./routes/friends');
 var blocks = require('./routes/blocks');
 var users = require('./routes/users');
+var items = require('./routes/items');
 
 var app = express();
 
@@ -40,6 +41,7 @@ app.use('/users', jwt({secret:secret}), users);
 app.use('/friends', jwt({secret:secret}), friends);
 app.use('/blocks', jwt({secret:secret}), blocks);
 app.use('/lists', jwt({secret:secret}), lists);
+app.use('/items', jwt({secret:secret}), items);
 app.use('/', routes);
 
 // catch 404 and forward to error handler

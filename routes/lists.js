@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
   .where("user_lists.user_id", req.user.id)
   .then(function(data, err){
     if(!checkErr(res, err)){
-      res.json({success:true, data: data.data});
+      res.json({success:true, data: data});
     }
   });
 });
@@ -36,7 +36,7 @@ router.post('/', function(req, res, next) {
   knex('lists')
   .insert({
     dateCreated: date,
-    dateModfied: date,
+    dateModified: date,
     name: req.body.name,
     owner_id: req.user.id
   })
@@ -45,8 +45,8 @@ router.post('/', function(req, res, next) {
     if(!checkErr(res, err)){
       knex('user_lists')
       .insert({
-        list_id: data,
-        user_id: req.user.id
+        list_id: parseInt(data),
+        user_id: parseInt(req.user.id)
       })
       .then(function(data2, err2){
         if(!checkErr(res, err2)){

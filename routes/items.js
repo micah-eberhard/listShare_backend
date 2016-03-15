@@ -12,10 +12,9 @@ function checkErr(res, err){
   return fail;
 }
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  knex('blocks').where({
-    user_id: req.user.id
+router.get('/:id', function(req, res, next) {
+  knex('items').where({
+    list_id: req.params.id
   })
   .then(function(data, err){
     if(!checkErr(res, err)){
@@ -24,36 +23,19 @@ router.get('/', function(req, res, next) {
   });
 });
 router.post('/', function(req, res, next) {
-  knex('users')
-  .first()
-  .where({email: req.body.email})
+  req.body.owner_id = req.user.id;
+  knex('items')
+  .insert(req.body) //TODO This needs fixed for security
   .then(function(data, err){
     if(!checkErr(res, err)){
-      if(data && data.length !== 0)
-      {
-        knex('blocks')
-        .insert({
-          user_id: req.user.id,
-          block_id: data.id,
-          block_email: data.email
-        })
-        .then(function(data2, err2){
-          if(!checkErr(res, err2)){
-            res.json({success:true});
-          }
-        });
-      }
-      else
-      {
-        res.json({success:false, reason: "Couldn't find '"+req.body.email+"' in our records."});
-      }
+      res.json({success:true});
     }
   });
 });
 router.delete('/:id', function(req, res, next) {
-  knex('blocks').where({
-    user_id: req.user.id,
-    block_id : req.params.id
+  knex('items')
+  .where({
+    id: req.params.id // Add auth to make sure the requestor has access to that list.
   })
   .del()
   .then(function(data, err){

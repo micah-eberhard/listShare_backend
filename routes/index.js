@@ -30,7 +30,7 @@ function registerUser(user, res){
     email: user.email
   })
   .then(function(data, err){
-    if(data.length === 0) {
+    if(!data || data.length === 0) {
       knex('users').insert({
         email: user.email,
         password: user.password,
@@ -38,8 +38,8 @@ function registerUser(user, res){
         lastName: user.lastName
       })
       .returning('id')
-      .then(function(data, err){
-        if(!checkErr(res, err)){
+      .then(function(data2, err2){
+        if(!checkErr(res, err2)){
           res.json({success: true});
         }
       });
@@ -60,7 +60,7 @@ router.post('/login', function(req, res, next) {
   knex('users').first().where({
     email: req.body.email
   }).then(function(data, err){
-    if(data.length === 0) {
+    if(!data || data.length === 0) {
       res.json({success:false,reason:'Failed to authenticate'});
     } else {
       if(!checkErr(res, err)){
