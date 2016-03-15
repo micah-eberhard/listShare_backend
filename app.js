@@ -1,11 +1,18 @@
+require('dotenv').load();
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var jwt = require('express-jwt');
+var jsonWebToken = require('jsonwebtoken');
+var cors = require('cors');
 
 var routes = require('./routes/index');
+var lists = require('./routes/lists');
+var friends = require('./routes/friends');
+var blocks = require('./routes/blocks');
 var users = require('./routes/users');
 
 var app = express();
@@ -22,8 +29,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var corsOptions = {
+  origin: '*'
+};
+app.use(cors(corsOptions));
+
+var secret = 'sfdfsSDFsdfjoiefhjiu43rfksdjdsaj3r3rnfhfsbjhdfbdhjasd'; // use dotenv.
+
+app.use('/users', jwt({secret:secret}), users);
+app.use('/friends', jwt({secret:secret}), friends);
+app.use('/blocks', jwt({secret:secret}), blocks);
+app.use('/lists', jwt({secret:secret}), lists);
 app.use('/', routes);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
