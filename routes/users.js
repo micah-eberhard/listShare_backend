@@ -25,4 +25,8 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/socket', function(req, res, next) {
+  var user = req.user;
+});
+
 module.exports = router;

@@ -67,6 +67,7 @@ router.post('/login', function(req, res, next) {
         bcrypt.compare(req.body.password, data.password, function(err, match){
           if(match){
             var user = data;
+            console.log(user);
             delete user.password;
             var expires = {
               expiresInMinutes : 518400
