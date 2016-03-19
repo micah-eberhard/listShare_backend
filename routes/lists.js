@@ -85,9 +85,10 @@ router.post('/', function(req, res, next) {
         if(!checkErr(res, err2)){
 
           //Emit Update {location: lists, id:data.id}
-          GlobalObj.refreshUserLists();
-          GlobalObj.updateUsers('lists', parseInt(data));
-          res.json({success: true});
+          GlobalObj.refreshUserLists().then(function(success){
+            GlobalObj.updateUsers('lists', parseInt(data));
+            res.json({success: true});
+          });
         }
       });
     }
@@ -99,11 +100,23 @@ router.delete('/:id', function(req, res, next) {
   .where("lists.id", req.params.id)
   .andWhere("lists.owner_id", req.user.id)
   .del()
-  .then(function(data2, err){
+  .returning('id')
+  .then(function(data, err){
     if(!checkErr(res, err)){
-      GlobalObj.refreshUserLists();
-      GlobalObj.updateUsers('lists', parseInt(req.params.id));
-      res.json({success: true});
+      if(data.length > 0) {
+        knex('user_lists')
+        .where("list_id", parseInt(data))
+        .del()
+        .then(function(data2, err2){
+          if(!checkErr(res, err2)){
+
+            GlobalObj.updateUsers('lists', parseInt(data));
+            GlobalObj.refreshUserLists().then(function(success){
+              res.json({success: true});
+            });
+          }
+        });
+      }
     }
   });
 });

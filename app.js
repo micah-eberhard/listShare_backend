@@ -20,6 +20,7 @@ var friends = require('./routes/friends');
 var blocks = require('./routes/blocks');
 var users = require('./routes/users');
 var items = require('./routes/items');
+var knex = require('./db/knex');
 
 var app = express();
 
@@ -97,7 +98,8 @@ io.on('connection', function (socket) {
      try{
 
        GlobalObj.appClients.push({id:[socket.id][0], user:socket.decoded_token});
-       io.to(GlobalObj.appClients[0].id).emit('test', {test:'thing'});
+       //io.to(GlobalObj.appClients[0].id).emit('update', {location:'lists', id:'1'});
+       io.to([socket.id][0]).emit('update', {location:'lists', id:'1'});
      }
      catch(e){console.log(e);}
 
@@ -122,19 +124,23 @@ io.on('connection', function (socket) {
 GlobalObj.ioServer = io;
 GlobalObj.userLists = [];
 GlobalObj.refreshUserLists = function(){
-  knex('user_lists')
+  return knex('user_lists')
   .then(function(data, err){
+    GlobalObj.userLists =[];
     GlobalObj.userLists = data;
+    console.log(GlobalObj.userLists);
+    return true;
   });
 };
 GlobalObj.updateUsers = function(location, id)
 {
   for(var i=0; i < GlobalObj.appClients.length; i++)
   {
-    for(var j=0; j < GlobalObj.userLists; j++)
+    for(var j=0; j < GlobalObj.userLists.length; j++)
     {
       if(GlobalObj.appClients[i].user.id === GlobalObj.userLists[j].user_id && id === GlobalObj.userLists[j].list_id)
       {
+        console.log(GlobalObj.appClients[i].id + " Update at: " + location + " " + id);
         GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update', {location:location, id:id});
       }
     }
