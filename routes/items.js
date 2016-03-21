@@ -22,16 +22,62 @@ router.get('/:id', function(req, res, next) {
     }
   });
 });
-router.post('/', function(req, res, next) {
+router.post('/:id', function(req, res, next) {
   req.body.owner_id = req.user.id;
+  req.body.list_id = req.params.id;
   knex('items')
   .insert(req.body) //TODO This needs fixed for security
+  .returning('list_id', 'id')
   .then(function(data, err){
     if(!checkErr(res, err)){
-      res.json({success:true});
+      console.log(data);
+      GlobalObj.refreshUserLists().then(function(success){
+        GlobalObj.updateUsers('lists', parseInt(data[0]), parseInt(data[1]));
+        res.json({success: true});
+      });
     }
   });
 });
+
+router.post('/:list_id/:item_id', function(req, res, next) {
+  var item = req.body;
+  if(item.changed)
+  {
+    if(item.changed.searching)
+    {
+      item.searching = parseInt(req.user.id);
+    }
+    else if(item.changed.acquired)
+    {
+      item.acquired = parseInt(req.user.id);
+    }
+  }
+
+  var inData = {
+    name:item.name,
+    category:item.category,
+    price:item.price,
+    amount:item.amount,
+    searching:item.searching,
+    acquired:item.acquired,
+    comments:item.comments
+  };
+
+  knex('items')
+  .update(inData) //TODO This needs fixed for security
+  .where({id:req.params.item_id})
+  .returning('list_id', 'id')
+  .then(function(data, err){
+    if(!checkErr(res, err)){
+      console.log(data);
+      GlobalObj.refreshUserLists().then(function(success){
+        GlobalObj.updateUsers('lists', parseInt(data[0]), parseInt(data[1]));
+        res.json({success: true});
+      });
+    }
+  });
+});
+
 router.delete('/:id', function(req, res, next) {
   knex('items')
   .where({

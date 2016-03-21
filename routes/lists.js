@@ -26,16 +26,11 @@ router.get('/', function(req, res, next) {
   .where("user_lists.user_id", req.user.id)
   .then(function(data, err){
     if(!checkErr(res, err)){
-      /*
-        //  Socket IO update all client sockets.
-      for(var i=0; i < GlobalObj.appClients.length; i++)
-      {
-        if(GlobalObj.appClients[i].user.id === req.user.id)
-        {
-          GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update', {location:'lists', data:data});
-        }
-      }
-      */
+      // var queryString = 'list_id = ' + data[0].list_id;
+      // for(var i=1; i < data.length; i++)
+      // {
+      //   queryString = queryString + 'OR list_id = ' + data[i].list_id;
+      // }
       res.json({success:true, data: data});
     }
   });
