@@ -99,13 +99,19 @@ io.on('connection', function (socket) {
 
        GlobalObj.appClients.push({id:[socket.id][0], user:socket.decoded_token});
        //io.to(GlobalObj.appClients[0].id).emit('update', {location:'lists', id:'1'});
-       io.to([socket.id][0]).emit('update', {location:'lists', id:'1'});
+       io.to([socket.id][0]).emit('update', {location:'all', id:'1'});
      }
      catch(e){console.log(e);}
 
      console.log(GlobalObj.appClients);
 
      socket
+     .on('push_lists', function(){
+       io.to([socket.id][0]).emit('push_lists', {success: true});
+     })
+     .on('push_list_single', function(){
+       io.to([socket.id][0]).emit('push_list_single', {success: true});
+     })
      .on('disconnect', function(){
         for(var i=0; i < GlobalObj.appClients.length; i++)
         {

@@ -51,6 +51,14 @@ router.post('/:list_id/:item_id', function(req, res, next) {
     {
       item.acquired = parseInt(req.user.id);
     }
+    else if(item.changed.searching === false)
+    {
+      item.searching = null;
+    }
+    else if(item.changed.acquired === false)
+    {
+      item.acquired = null;
+    }
   }
 
   var inData = {
