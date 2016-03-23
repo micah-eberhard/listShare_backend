@@ -109,8 +109,8 @@ io.on('connection', function (socket) {
      .on('push_lists', function(){
        io.to([socket.id][0]).emit('push_lists', {success: true});
      })
-     .on('push_list_single', function(){
-       io.to([socket.id][0]).emit('push_list_single', {success: true});
+     .on('push_list_single', function(data){
+       io.to([socket.id][0]).emit('push_list_single', data);
      })
      .on('disconnect', function(){
         for(var i=0; i < GlobalObj.appClients.length; i++)
@@ -147,7 +147,10 @@ GlobalObj.updateUsers = function(location, id)
       if(GlobalObj.appClients[i].user.id === GlobalObj.userLists[j].user_id && id === GlobalObj.userLists[j].list_id)
       {
         console.log(GlobalObj.appClients[i].id + " Update at: " + location + " " + id);
-        GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update', {location:location, id:id});
+        if(arguments[2])
+          GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update', {location:location, id:id, item:arguments[2]});
+        else
+          GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update', {location:location, id:id});
       }
     }
   }

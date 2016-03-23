@@ -27,12 +27,12 @@ router.post('/:id', function(req, res, next) {
   req.body.list_id = req.params.id;
   knex('items')
   .insert(req.body) //TODO This needs fixed for security
-  .returning('list_id', 'id')
+  .returning('list_id')
   .then(function(data, err){
     if(!checkErr(res, err)){
       console.log(data);
       GlobalObj.refreshUserLists().then(function(success){
-        GlobalObj.updateUsers('lists', parseInt(data[0]), parseInt(data[1]));
+        GlobalObj.updateUsers('lists', parseInt(data[0]));
         res.json({success: true});
       });
     }
@@ -74,12 +74,13 @@ router.post('/:list_id/:item_id', function(req, res, next) {
   knex('items')
   .update(inData) //TODO This needs fixed for security
   .where({id:req.params.item_id})
-  .returning('list_id', 'id')
+  .returning('list_id')
   .then(function(data, err){
     if(!checkErr(res, err)){
       console.log(data);
       GlobalObj.refreshUserLists().then(function(success){
-        GlobalObj.updateUsers('lists', parseInt(data[0]), parseInt(data[1]));
+        inData.id = parseInt(req.params.item_id);
+        GlobalObj.updateUsers('lists', parseInt(data[0]), inData);
         res.json({success: true});
       });
     }
