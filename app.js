@@ -138,7 +138,7 @@ GlobalObj.refreshUserLists = function(){
     return true;
   });
 };
-GlobalObj.updateUsers = function(location, id)
+GlobalObj.updateUsers = function(location, id, key)
 {
   for(var i=0; i < GlobalObj.appClients.length; i++)
   {
@@ -147,10 +147,10 @@ GlobalObj.updateUsers = function(location, id)
       if(GlobalObj.appClients[i].user.id === GlobalObj.userLists[j].user_id && id === GlobalObj.userLists[j].list_id)
       {
         console.log(GlobalObj.appClients[i].id + " Update at: " + location + " " + id);
-        if(arguments[2])
-          GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update', {location:location, id:id, item:arguments[2]});
+        if(arguments[3])
+          GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update_'+location, {location:location, id:id, [key]:arguments[3]});
         else
-          GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update', {location:location, id:id});
+          GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update_'+location, {location:location, id:id, [key]:'other'});
       }
     }
   }

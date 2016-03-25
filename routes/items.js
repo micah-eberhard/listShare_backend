@@ -80,7 +80,8 @@ router.post('/:list_id/:item_id', function(req, res, next) {
       console.log(data);
       GlobalObj.refreshUserLists().then(function(success){
         inData.id = parseInt(req.params.item_id);
-        GlobalObj.updateUsers('lists', parseInt(data[0]), inData);
+        inData.list_id = data[0];
+        GlobalObj.updateUsers('lists', parseInt(data[0]), 'item', inData);
         res.json({success: true});
       });
     }

@@ -59,15 +59,16 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-
   var date = new Date();
-  knex('lists')
-  .insert({
+  var listObj = {
     dateCreated: date,
     dateModified: date,
     name: req.body.name,
     owner_id: req.user.id
-  })
+  };
+
+  knex('lists')
+  .insert(listObj)
   .returning('id')
   .then(function(data, err){
     if(!checkErr(res, err)){
@@ -78,10 +79,12 @@ router.post('/', function(req, res, next) {
       })
       .then(function(data2, err2){
         if(!checkErr(res, err2)){
-
+          listObj.id = parseInt(data);
+          listObj.type = 'new';
+          listObj.items = [];
           //Emit Update {location: lists, id:data.id}
           GlobalObj.refreshUserLists().then(function(success){
-            GlobalObj.updateUsers('lists', parseInt(data));
+            GlobalObj.updateUsers('lists', parseInt(data), 'list', listObj);
             res.json({success: true});
           });
         }
@@ -105,7 +108,7 @@ router.delete('/:id', function(req, res, next) {
         .then(function(data2, err2){
           if(!checkErr(res, err2)){
 
-            GlobalObj.updateUsers('lists', parseInt(data));
+            GlobalObj.updateUsers('lists', parseInt(data), 'list');
             GlobalObj.refreshUserLists().then(function(success){
               res.json({success: true});
             });
