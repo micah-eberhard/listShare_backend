@@ -12,13 +12,6 @@ function checkErr(res, err){
   return fail;
 }
 
-/*
-SELECT * from user_lists
-inner join
-lists on user_lists.list_id = lists.id
-where user_lists.user_id = 1
-*/
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
   knex('user_lists')
@@ -43,16 +36,7 @@ router.get('/:id', function(req, res, next) {
   .andWhere("user_lists.list_id", req.params.id)
   .then(function(data, err){
     if(!checkErr(res, err)){
-      /*
-        //  Socket IO update all client sockets.
-      for(var i=0; i < GlobalObj.appClients.length; i++)
-      {
-        if(GlobalObj.appClients[i].user.id === req.user.id)
-        {
-          GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update', {location:'lists', data:data});
-        }
-      }
-      */
+
       res.json({success:true, data: data});
     }
   });
