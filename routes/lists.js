@@ -12,18 +12,12 @@ function checkErr(res, err){
   return fail;
 }
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
   knex('user_lists')
   .innerJoin('lists', 'user_lists.list_id', 'lists.id')
   .where("user_lists.user_id", req.user.id)
   .then(function(data, err){
     if(!checkErr(res, err)){
-      // var queryString = 'list_id = ' + data[0].list_id;
-      // for(var i=1; i < data.length; i++)
-      // {
-      //   queryString = queryString + 'OR list_id = ' + data[i].list_id;
-      // }
       res.json({success:true, data: data});
     }
   });
