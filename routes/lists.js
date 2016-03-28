@@ -63,7 +63,7 @@ router.post('/', function(req, res, next) {
           //Emit Update {location: lists, id:data.id}
           GlobalObj.refreshUserLists().then(function(success){
             GlobalObj.updateUsers('lists', parseInt(data), 'list', listObj);
-            res.json({success: true});
+            res.json({success: true, id:parseInt(data)});
           });
         }
       });
@@ -95,6 +95,7 @@ router.post('/addrecipient/:list_id', function(req, res, next) {
               list_id: parseInt(req.params.list_id),
               user_id: parseInt(req.body.user_id)
             })
+            .returning('user_id')
             .then(function(data2, err2){
               if(!checkErr(res, err2)){
                 knex('lists')
@@ -107,7 +108,7 @@ router.post('/addrecipient/:list_id', function(req, res, next) {
                   //console.log(data3);
                   GlobalObj.refreshUserLists().then(function(success){
                     GlobalObj.updateUsers('lists', parseInt(req.params.list_id), 'list', listObj, {single:true, user_id: parseInt(req.body.user_id)});
-                    res.json({success: true});
+                    res.json({success: true, id:data2[0]});
                   });
                 })
               }
