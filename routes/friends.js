@@ -14,9 +14,9 @@ function checkErr(res, err){
 
 
 router.get('/', function(req, res, next) {
-  knex('friends').where({
-    user_id: req.user.id
-  })
+  knex('friends')
+  .innerJoin('users', 'friends.friend_id', 'users.id')
+  .where('friends.user_id', req.user.id)
   .then(function(data, err){
     if(!checkErr(res, err)){
       res.json({success:true, data: data});
@@ -32,13 +32,29 @@ router.post('/', function(req, res, next) {
       if(data && data.length !== 0)
       {
         knex('friends')
-        .insert({
-          user_id: req.user.id,
-          friend_id: data.id
+        .first()
+        .where({
+          user_id : req.user.id,
+          friend_id : data.id
         })
         .then(function(data2, err2){
           if(!checkErr(res, err2)){
-            res.json({success:true});
+            if(data2 && data2.length !== 0)
+            {
+              res.json({success:false, reason: req.body.email+" is already your friend."});
+            }
+            else {
+              knex('friends')
+              .insert({
+                user_id: req.user.id,
+                friend_id: data.id
+              })
+              .then(function(data3, err3){
+                if(!checkErr(res, err3)){
+                  res.json({success:true});
+                }
+              });
+            }
           }
         });
       }

@@ -119,6 +119,9 @@ router.post('/addrecipient/:list_id', function(req, res, next) {
         }
       });
     }
+    else {
+      res.json({success:false, reason: "Couldn't find '"+req.body.email+"' in our records."});
+    }
     }
   });
 });
