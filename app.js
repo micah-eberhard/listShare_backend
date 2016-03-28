@@ -147,10 +147,24 @@ GlobalObj.updateUsers = function(location, id, key)
       if(GlobalObj.appClients[i].user.id === GlobalObj.userLists[j].user_id && id === GlobalObj.userLists[j].list_id)
       {
         console.log(GlobalObj.appClients[i].id + " Update at: " + location + " " + id);
-        if(arguments[3])
+        if(arguments[3] && arguments[4] === undefined)
+        {
           GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update_'+location, {location:location, id:id, [key]:arguments[3]});
-        else
+          console.log("Basic update all");
+        }
+        else if(arguments[4].single && arguments[4].user_id === GlobalObj.appClients[i].user.id)
+        {
+          GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update_'+location, {location:location, id:id, [key]:arguments[3]});
+          console.log("Update Single");
+        }
+        else if (arguments[3] === undefined && arguments[4] === undefined)
+        {
           GlobalObj.ioServer.to(GlobalObj.appClients[i].id).emit('update_'+location, {location:location, id:id, [key]:'other'});
+          console.log("Update Other");
+        }
+        else {
+          console.log("Didn't Meet Emit Requirements.");
+        }
       }
     }
   }

@@ -24,15 +24,28 @@ router.get('/:id', function(req, res, next) {
 });
 router.post('/:id', function(req, res, next) {
   req.body.owner_id = req.user.id;
-  req.body.list_id = req.params.id;
+  req.body.list_id = parseInt(req.params.id);
   knex('items')
   .insert(req.body) //TODO This needs fixed for security
-  .returning('list_id')
+  .returning('id')
   .then(function(data, err){
     if(!checkErr(res, err)){
+      var inData = req.body;
+
+      inData = {
+        name:req.body.name,
+        category:req.body.category,
+        price:req.body.price,
+        amount:req.body.amount,
+        searching:null,
+        acquired:null,
+        comments: ''
+      };
       console.log(data);
       GlobalObj.refreshUserLists().then(function(success){
-        GlobalObj.updateUsers('lists', parseInt(data[0]));
+        inData.id = parseInt(data[0]);
+        console.log('lists, ' + req.params.id + " item " + inData);
+        GlobalObj.updateUsers('lists', parseInt(req.params.id), 'item', inData);
         res.json({success: true});
       });
     }
