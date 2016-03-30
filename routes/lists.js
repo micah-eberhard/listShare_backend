@@ -52,18 +52,18 @@ router.post('/', function(req, res, next) {
     if(!checkErr(res, err)){
       knex('user_lists')
       .insert({
-        list_id: parseInt(data),
+        list_id: parseInt(data[0]),
         user_id: parseInt(req.user.id)
       })
       .then(function(data2, err2){
         if(!checkErr(res, err2)){
-          listObj.id = parseInt(data);
+          listObj.id = parseInt(data[0]);
           listObj.type = 'new';
           listObj.items = [];
           //Emit Update {location: lists, id:data.id}
           GlobalObj.refreshUserLists().then(function(success){
-            GlobalObj.updateUsers('lists', parseInt(data), 'list', listObj);
-            res.json({success: true, id:parseInt(data)});
+            GlobalObj.updateUsers('lists', parseInt(data[0]), 'list', listObj);
+            res.json({success: true, id:parseInt(data[0])});
           });
         }
       });

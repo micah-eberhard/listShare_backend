@@ -42,8 +42,10 @@ router.post('/:id', function(req, res, next) {
         comments: ''
       };
       console.log(data);
+      inData.id = parseInt(data[0]);
+      inData.list_id = parseInt(req.params.id);
+
       GlobalObj.refreshUserLists().then(function(success){
-        inData.id = parseInt(data[0]);
         console.log('lists, ' + req.params.id + " item " + inData);
         GlobalObj.updateUsers('lists', parseInt(req.params.id), 'item', inData);
         res.json({success: true});
@@ -91,10 +93,10 @@ router.post('/:list_id/:item_id', function(req, res, next) {
   .then(function(data, err){
     if(!checkErr(res, err)){
       console.log(data);
+      inData.id = parseInt(req.params.item_id);
+      inData.list_id = parseInt(req.params.list_id);
       GlobalObj.refreshUserLists().then(function(success){
-        inData.id = parseInt(req.params.item_id);
-        inData.list_id = parseInt(data[0]);
-        GlobalObj.updateUsers('lists', parseInt(data[0]), 'item', inData);
+        GlobalObj.updateUsers('lists', parseInt(req.params.list_id), 'item', inData);
         res.json({success: true});
       });
     }
