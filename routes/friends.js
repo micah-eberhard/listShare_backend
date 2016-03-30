@@ -51,7 +51,7 @@ router.post('/', function(req, res, next) {
               })
               .then(function(data3, err3){
                 if(!checkErr(res, err3)){
-                  res.json({success:true});
+                  res.json({success:true, friend_id:data.id});
                 }
               });
             }

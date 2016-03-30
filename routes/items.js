@@ -104,12 +104,17 @@ router.post('/:list_id/:item_id', function(req, res, next) {
 router.delete('/:id', function(req, res, next) {
   knex('items')
   .where({
-    id: req.params.id // Add auth to make sure the requestor has access to that list.
+    id: parseInt(req.params.id) // Add auth to make sure the requestor has access to that list.
   })
   .del()
+  .returning('list_id')
   .then(function(data, err){
     if(!checkErr(res, err)){
-      res.json({success:true});
+      GlobalObj.refreshUserLists().then(function(success){
+        GlobalObj.updateUsers('lists', parseInt(data[0]), 'item', {id: parseInt(req.params.id), delete:true});
+        res.json({success:true, item_id:parseInt(req.params.id)});
+      });
+
     }
   });
 });
