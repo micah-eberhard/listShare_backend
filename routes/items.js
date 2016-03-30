@@ -86,14 +86,14 @@ router.post('/:list_id/:item_id', function(req, res, next) {
 
   knex('items')
   .update(inData) //TODO This needs fixed for security
-  .where({id:req.params.item_id})
+  .where({id:parseInt(req.params.item_id)})
   .returning('list_id')
   .then(function(data, err){
     if(!checkErr(res, err)){
       console.log(data);
       GlobalObj.refreshUserLists().then(function(success){
         inData.id = parseInt(req.params.item_id);
-        inData.list_id = data[0];
+        inData.list_id = parseInt(data[0]);
         GlobalObj.updateUsers('lists', parseInt(data[0]), 'item', inData);
         res.json({success: true});
       });
