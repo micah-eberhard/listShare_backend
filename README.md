@@ -1,7 +1,8 @@
 # listShare_backend
 
 This is the API Server side of the ListShare mobile app.
-Technologies used: Node, Express, Socket.io, PostgreSQL, Knex.
+
+Technologies used: Angular, ionic, Cordova, Node, Express, Socket.io, PostgreSQL, Knex.
 
 ---
 
